@@ -332,13 +332,13 @@ export default function InterviewsPage() {
 
             <div className="rounded-lg bg-white p-4 shadow-md">
                 <div className="grid gap-4 xl:grid-cols-[180px_1fr_auto] xl:items-end xl:justify-between">
-                    <label className="block">
+                    <label className="block min-w-0">
                         <span className="mb-1.5 block text-sm font-medium text-slate-700">Filtrar por data</span>
                         <input
                             type="date"
                             value={meetingDate}
                             onChange={(event) => setMeetingDate(event.target.value)}
-                            className="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            className="w-full max-w-full rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                         />
                     </label>
 
@@ -577,13 +577,13 @@ export default function InterviewsPage() {
                             </fieldset>
 
                             <div className="grid gap-4 md:grid-cols-3">
-                                <label className="block">
+                                <label className="block min-w-0">
                                     <span className="mb-1.5 block text-sm font-medium text-slate-700">Data da entrevista</span>
                                     <input
                                         type="date"
                                         value={interviewForm.startDate}
                                         onChange={(event) => handleInterviewFormChange('startDate', event.target.value)}
-                                        className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                                        className="w-full max-w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
                                         required
                                     />
                                 </label>

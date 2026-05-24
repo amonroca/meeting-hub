@@ -33,7 +33,6 @@ const meetingTypeMap = [
       'entrevista com a presidencia da estaca',
       'calendário de entrevista',
       'calendario de entrevista',
-      'entrevista',
     ],
   },
   {
@@ -125,18 +124,18 @@ function parseInterviewMetadata(event = {}) {
 
   const interviewer = String(
     privateData.interviewer ||
-      getOptionValueFromLabel(stakePresidencyInterviewerOptions, extractValueFromDescription(description, 'Entrevistador')),
+    getOptionValueFromLabel(stakePresidencyInterviewerOptions, extractValueFromDescription(description, 'Entrevistador')),
   )
 
   const interviewNature = String(
     privateData.interviewNature ||
-      getOptionValueFromLabel(interviewNatureOptions, extractValueFromDescription(description, 'Natureza')),
+    getOptionValueFromLabel(interviewNatureOptions, extractValueFromDescription(description, 'Natureza')),
   )
 
   const attendanceMode = String(
     privateData.attendanceMode ||
-      getOptionValueFromLabel(interviewModeOptions, extractValueFromDescription(description, 'Modalidade')) ||
-      (/on-line|online/i.test(location) ? 'online' : location ? 'presencial' : ''),
+    getOptionValueFromLabel(interviewModeOptions, extractValueFromDescription(description, 'Modalidade')) ||
+    (/on-line|online/i.test(location) ? 'online' : location ? 'presencial' : ''),
   )
 
   return {
@@ -242,8 +241,8 @@ async function invokeGoogleCalendarAction(payload = {}) {
   const { data, error } = await client.functions.invoke('google-calendar-events', {
     headers: session?.access_token
       ? {
-          Authorization: `Bearer ${session.access_token}`,
-        }
+        Authorization: `Bearer ${session.access_token}`,
+      }
       : undefined,
     body: payload,
   })
@@ -271,8 +270,8 @@ export async function listGoogleCalendarEvents(filters = {}) {
   const { data, error } = await client.functions.invoke('google-calendar-events', {
     headers: session?.access_token
       ? {
-          Authorization: `Bearer ${session.access_token}`,
-        }
+        Authorization: `Bearer ${session.access_token}`,
+      }
       : undefined,
     body: {
       startDate: filters.startDate || null,
