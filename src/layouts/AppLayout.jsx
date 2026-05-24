@@ -96,11 +96,11 @@ export default function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
+    <div className="min-h-screen overflow-x-hidden bg-slate-100 text-slate-900">
       <div className="fixed left-0 right-0 top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
         <div>
           <p className="text-sm font-semibold">Meeting Hub</p>
-          <p className="text-xs text-slate-500">Agenda Generator</p>
+          <p className="text-xs text-slate-500">Meeting Minutes Generator</p>
         </div>
         <button
           type="button"
@@ -131,7 +131,7 @@ export default function AppLayout() {
         <Sidebar menuItems={menuItems} user={user} onClose={() => { }} onLogout={handleLogout} />
       </aside>
 
-      <main className="px-4 pb-6 pt-20 lg:ml-64 lg:px-8 lg:pt-8">
+      <main className="min-w-0 overflow-x-hidden px-4 pb-6 pt-20 lg:ml-64 lg:px-8 lg:pt-8">
         <Outlet />
       </main>
     </div>

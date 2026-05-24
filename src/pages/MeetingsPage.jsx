@@ -317,23 +317,23 @@ export default function MeetingsPage() {
             </select>
           </label>
 
-          <label className="block">
+          <label className="block min-w-0">
             <span className="mb-1.5 block text-sm font-medium text-slate-700">Data inicial</span>
             <input
               type="date"
               value={startDate}
               onChange={(event) => setStartDate(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              className="w-full max-w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             />
           </label>
 
-          <label className="block">
+          <label className="block min-w-0">
             <span className="mb-1.5 block text-sm font-medium text-slate-700">Data final</span>
             <input
               type="date"
               value={endDate}
               onChange={(event) => setEndDate(event.target.value)}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              className="w-full max-w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             />
           </label>
 

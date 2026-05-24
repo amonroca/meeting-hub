@@ -138,24 +138,24 @@ export default function TasksPage() {
           </div>
 
           {/* Data inicial */}
-          <div>
+          <div className="min-w-0">
             <label className="mb-1 block text-xs font-semibold text-slate-500">Data inicial</label>
             <input
               type="date"
               value={filterStartDate}
               onChange={(e) => setFilterStartDate(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              className="w-full max-w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400"
             />
           </div>
 
           {/* Data final */}
-          <div>
+          <div className="min-w-0">
             <label className="mb-1 block text-xs font-semibold text-slate-500">Data final</label>
             <input
               type="date"
               value={filterEndDate}
               onChange={(e) => setFilterEndDate(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400"
+              className="w-full max-w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400"
             />
           </div>
 

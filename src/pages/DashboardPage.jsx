@@ -280,7 +280,7 @@ export default function DashboardPage() {
       {/* Gráficos */}
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Atas por mês */}
-        <div className="rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg lg:col-span-2">
+        <div className="min-w-0 overflow-hidden rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg lg:col-span-2">
           <h2 className="text-lg font-semibold text-slate-900">Atas por mês</h2>
           <p className="mb-4 text-sm text-slate-500">Últimos 6 meses</p>
           {loading ? (
@@ -310,7 +310,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Distribuição por status de tarefa */}
-        <div className="rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg">
+        <div className="min-w-0 overflow-hidden rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg">
           <h2 className="text-lg font-semibold text-slate-900">Status das tarefas</h2>
           <p className="mb-2 text-sm text-slate-500">Distribuição por lista do Trello</p>
           {loading ? (
@@ -360,7 +360,7 @@ export default function DashboardPage() {
       {/* Próximas reuniões do mês + tempo médio aberta */}
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Próximas reuniões do mês vigente */}
-        <div className="rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg">
+        <div className="min-w-0 overflow-hidden rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg">
           <h2 className="text-lg font-semibold text-slate-900">Reuniões do mês</h2>
           <p className="mb-4 text-sm text-slate-500">Reuniões de liderança no mês vigente</p>
           {loading ? (
@@ -390,7 +390,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Barras: tempo médio aberta por tipo de reunião */}
-        <div className="rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg">
+        <div className="min-w-0 overflow-hidden rounded-lg bg-white p-4 shadow-md transition hover:shadow-lg">
           <h2 className="text-lg font-semibold text-slate-900">Tempo médio de tarefa aberta</h2>
           <p className="mb-4 text-sm text-slate-500">Por board do Trello · em dias</p>
           {loading ? (
