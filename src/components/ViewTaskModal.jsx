@@ -104,17 +104,17 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
             className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-4 sm:items-center"
             onClick={(e) => { if (e.target === e.currentTarget && !deleting) onClose() }}
         >
-            <div className="w-full max-w-2xl rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
+            <div className="flex w-full max-w-2xl flex-col rounded-3xl bg-white shadow-xl ring-1 ring-slate-200 max-h-[90vh]">
                 {/* Header */}
-                <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
+                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
                     <div className="min-w-0">
-                        <h2 className="text-lg font-semibold text-slate-900">{task.name}</h2>
+                        <h2 className="break-words text-lg font-semibold text-slate-900">{task.name}</h2>
                         {task.url && (
                             <a
                                 href={task.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mt-0.5 block text-xs text-blue-600 hover:underline"
+                                className="mt-0.5 block break-all text-xs text-blue-600 hover:underline"
                             >
                                 Ver no Trello
                             </a>
@@ -134,7 +134,7 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
                 </div>
 
                 {/* Detalhes */}
-                <div className="space-y-4 px-6 py-5">
+                <div className="flex-1 space-y-4 overflow-x-hidden overflow-y-auto px-6 py-5">
                     {/* Badges */}
                     <div className="flex flex-wrap gap-2">
                         {task.status ? (
@@ -175,17 +175,18 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
                         {task.description && (
                             <div>
                                 <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Descrição</p>
-                                <div className="mt-0.5 text-sm text-slate-700
+                                <div className="mt-0.5 break-words text-sm text-slate-700
                                     [&_p]:mb-2 [&_p:last-child]:mb-0
                                     [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-4
                                     [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-4
                                     [&_li]:mb-0.5
                                     [&_strong]:font-semibold [&_em]:italic
-                                    [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-800
+                                    [&_a]:break-all [&_a]:text-blue-600 [&_a]:underline [&_a:hover]:text-blue-800
                                     [&_h1]:text-base [&_h1]:font-bold [&_h1]:mb-1
                                     [&_h2]:text-sm [&_h2]:font-bold [&_h2]:mb-1
                                     [&_h3]:text-sm [&_h3]:font-semibold [&_h3]:mb-1
-                                    [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs
+                                    [&_code]:break-all [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs
+                                    [&_pre]:overflow-x-auto
                                     [&_blockquote]:border-l-2 [&_blockquote]:border-slate-300 [&_blockquote]:pl-3 [&_blockquote]:text-slate-500">
                                     <ReactMarkdown
                                         remarkPlugins={[remarkGfm, remarkBreaks]}
@@ -217,7 +218,7 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
                 </div>
 
                 {/* Footer */}
-                <div className="flex justify-between gap-3 border-t border-slate-100 px-6 py-4">
+                <div className="flex shrink-0 justify-between gap-3 border-t border-slate-100 px-6 py-4">
                     <button
                         type="button"
                         onClick={() => setConfirmDelete(true)}
