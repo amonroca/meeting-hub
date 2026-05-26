@@ -161,7 +161,7 @@ function buildCalendarEventBody(payload: Record<string, unknown>) {
     }
   }
 
-  const metadataKeys = ['interviewer', 'intervieweeName', 'phone', 'interviewNature', 'attendanceMode', 'notes']
+  const metadataKeys = ['meetingType', 'interviewer', 'intervieweeName', 'phone', 'interviewNature', 'attendanceMode', 'notes']
   const privateMetadata = Object.fromEntries(
     metadataKeys
       .filter((key) => typeof payload[key] === 'string' && String(payload[key]).trim())

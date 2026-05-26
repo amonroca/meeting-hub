@@ -27,8 +27,8 @@ select cron.schedule(
         '0 17 * * *',
         $$
         select net.http_post(
-                url := 'https://bevvknmdvjhhisnyfcyk.supabase.co/functions/v1/send-scheduled-reminders',
-                headers := '{"Content-Type":"application/json","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldnZrbm1kdmpoaGlzbnlmY3lrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDgyMDE5MywiZXhwIjoyMDkwMzk2MTkzfQ.11zkK7TMnzoWOBwolU4a1A41D2uHyyxwr-Pb_dkgU_M","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldnZrbm1kdmpoaGlzbnlmY3lrIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDgyMDE5MywiZXhwIjoyMDkwMzk2MTkzfQ.11zkK7TMnzoWOBwolU4a1A41D2uHyyxwr-Pb_dkgU_M"}'::jsonb,
+                url := 'https://<PROJECT_REF>.supabase.co/functions/v1/send-scheduled-reminders',
+                headers := '{"Content-Type":"application/json","Authorization":"Bearer <SERVICE_ROLE_KEY>","apikey":"<SERVICE_ROLE_KEY>"}'::jsonb,
                 body := '{}'::jsonb
             ) $$
     );
