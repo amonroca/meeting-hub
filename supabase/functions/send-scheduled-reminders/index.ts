@@ -34,14 +34,79 @@ function dateInBrasilia(daysAhead: number): string {
 interface CalendarEvent {
     id: string
     summary?: string
+    description?: string
     location?: string
     extendedProperties?: { private?: Record<string, string>; shared?: Record<string, string> }
     start?: { dateTime?: string; date?: string }
 }
 
+// Tipos de reunião contemplados no escopo da aplicação
+const LEADERSHIP_MEETING_TYPES = new Set([
+    'conselho_estaca',
+    'coordenacao_missionaria_estaca',
+    'presidencia_estaca',
+    'sumo_conselho_estaca',
+    'entrevista_presidencia_estaca',
+])
+
+const meetingTypeRules: Array<{ value: string; keywords: string[] }> = [
+    {
+        value: 'entrevista_presidencia_estaca',
+        keywords: [
+            'entrevista com a presidência da estaca',
+            'entrevista com a presidencia da estaca',
+            'calendário de entrevista',
+            'calendario de entrevista',
+        ],
+    },
+    {
+        value: 'sumo_conselho_estaca',
+        keywords: ['sumo conselho', 'reunião do sumo conselho', 'reuniao do sumo conselho'],
+    },
+    {
+        value: 'conselho_estaca',
+        keywords: ['conselho da estaca', 'conselho estaca', 'stake council', 'reunião de conselho', 'reuniao de conselho'],
+    },
+    {
+        value: 'coordenacao_missionaria_estaca',
+        keywords: [
+            'coordenação missionária',
+            'coordenacao missionaria',
+            'missionária da estaca',
+            'missionaria da estaca',
+            'missionary coordination',
+        ],
+    },
+    {
+        value: 'presidencia_estaca',
+        keywords: [
+            'presidência da estaca',
+            'presidencia da estaca',
+            'stake presidency',
+            'reunião de presidência',
+            'reuniao de presidencia',
+        ],
+    },
+]
+
+function inferMeetingTypeFromText(title: string = '', description: string = ''): string | undefined {
+    const text = `${title} ${description}`.toLowerCase()
+    return meetingTypeRules.find((rule) => rule.keywords.some((kw) => text.includes(kw)))?.value
+}
+
 interface ReminderBatch {
     daysAhead: number
-    reminderType: '4days' | '1day'
+    reminderType: '4days' | '1day' | '1hour'
+}
+
+/** Retorna o intervalo da próxima hora cheia em UTC (para filtrar entrevistas que iniciam na próxima hora) */
+function nextHourRange(): { start: Date; end: Date } {
+    const now = new Date()
+    const start = new Date(now)
+    start.setHours(start.getHours() + 1, 0, 0, 0)
+    const end = new Date(start)
+    end.setMinutes(59, 59, 999)
+    return { start, end }
 }
 
 Deno.serve(async (request: Request) => {
@@ -59,10 +124,15 @@ Deno.serve(async (request: Request) => {
         { daysAhead: 4, reminderType: '4days' },
         { daysAhead: 1, reminderType: '1day' },
     ]
+    let testChatId: number | undefined
     try {
         if (request.method === 'POST') {
             const body = await request.json().catch(() => ({}))
-            if (typeof body?.daysAhead === 'number' && body?.reminderType) {
+            if (typeof body?.testChatId === 'number') testChatId = body.testChatId
+            if (body?.reminderType === '1hour') {
+                // Lote exclusivo para lembretes de 1h antes das entrevistas (chamado pelo cron horário)
+                batches = [{ daysAhead: 0, reminderType: '1hour' }]
+            } else if (typeof body?.daysAhead === 'number' && body?.reminderType) {
                 batches = [{ daysAhead: body.daysAhead, reminderType: body.reminderType }]
             }
         }
@@ -145,6 +215,31 @@ Deno.serve(async (request: Request) => {
                 const meetingType = event.extendedProperties?.private?.meetingType
                     || event.extendedProperties?.shared?.meetingType
                     || (event.extendedProperties?.private?.interviewer ? 'entrevista_presidencia_estaca' : undefined)
+                    || inferMeetingTypeFromText(event.summary, event.description)
+
+                // Ignora eventos fora do escopo da aplicação
+                if (!meetingType || !LEADERSHIP_MEETING_TYPES.has(meetingType)) {
+                    console.log(`[org ${organizationId}] Evento "${title}" ignorado (tipo: ${meetingType ?? 'desconhecido'})`)
+                    continue
+                }
+
+                // Lote 4days: entrevistas não recebem lembrete de 4 dias (apenas 1 dia e 1 hora antes)
+                if (batch.reminderType === '4days' && meetingType === 'entrevista_presidencia_estaca') {
+                    console.log(`[org ${organizationId}] Entrevista "${title}" ignorada no lote 4days`)
+                    continue
+                }
+
+                // Lote 1hour: apenas entrevistas, e somente as que iniciam na próxima hora
+                if (batch.reminderType === '1hour') {
+                    if (meetingType !== 'entrevista_presidencia_estaca') continue
+                    const eventStart = event.start?.dateTime ? new Date(event.start.dateTime) : null
+                    if (!eventStart) continue
+                    const { start: nhStart, end: nhEnd } = nextHourRange()
+                    if (eventStart < nhStart || eventStart > nhEnd) {
+                        console.log(`[org ${organizationId}] Entrevista "${title}" fora da janela de 1h (início: ${event.start?.dateTime})`)
+                        continue
+                    }
+                }
 
                 const reminderResponse = await fetch(
                     `${supabaseUrl}/functions/v1/send-telegram-reminders`,
@@ -163,6 +258,7 @@ Deno.serve(async (request: Request) => {
                             meetingType,
                             location,
                             reminderType: batch.reminderType,
+                            ...(testChatId !== undefined && { testChatId }),
                         }),
                     }
                 )
