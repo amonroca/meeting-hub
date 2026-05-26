@@ -52,10 +52,35 @@ async function buildUserProfile(sessionUser) {
   }
 }
 
+const INACTIVITY_MS = 30 * 60 * 1000 // 30 minutos
+
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  // Timer de inatividade: desloga após 30 min sem interação
+  useEffect(() => {
+    if (!session || !supabase) return undefined
+
+    let timer
+
+    function resetTimer() {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        void supabase.auth.signOut()
+      }, INACTIVITY_MS)
+    }
+
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll']
+    events.forEach((e) => window.addEventListener(e, resetTimer, { passive: true }))
+    resetTimer()
+
+    return () => {
+      clearTimeout(timer)
+      events.forEach((e) => window.removeEventListener(e, resetTimer))
+    }
+  }, [session])
 
   useEffect(() => {
     let isMounted = true
