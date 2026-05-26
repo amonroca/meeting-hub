@@ -144,6 +144,7 @@ Deno.serve(async (request: Request) => {
                 const location = event.location
                 const meetingType = event.extendedProperties?.private?.meetingType
                     || event.extendedProperties?.shared?.meetingType
+                    || (event.extendedProperties?.private?.interviewer ? 'entrevista_presidencia_estaca' : undefined)
 
                 const reminderResponse = await fetch(
                     `${supabaseUrl}/functions/v1/send-telegram-reminders`,

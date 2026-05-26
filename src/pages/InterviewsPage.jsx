@@ -203,6 +203,7 @@ export default function InterviewsPage() {
                 .filter(Boolean)
                 .join('\n'),
             location: attendanceLabel,
+            meetingType: 'entrevista_presidencia_estaca',
             interviewer: interviewForm.interviewer,
             intervieweeName: interviewForm.intervieweeName.trim(),
             phone: interviewForm.phone.trim(),
