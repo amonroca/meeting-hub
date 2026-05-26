@@ -100,82 +100,83 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
     }
 
     return (
-        <div
-            className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-4 sm:items-center"
-            onClick={(e) => { if (e.target === e.currentTarget && !deleting) onClose() }}
-        >
-            <div className="flex w-full max-w-2xl flex-col rounded-3xl bg-white shadow-xl ring-1 ring-slate-200 max-h-[90vh]">
-                {/* Header */}
-                <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
-                    <div className="min-w-0">
-                        <h2 className="break-words text-lg font-semibold text-slate-900">{task.name}</h2>
-                        {task.url && (
-                            <a
-                                href={task.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="mt-0.5 block break-all text-xs text-blue-600 hover:underline"
-                            >
-                                Ver no Trello
-                            </a>
-                        )}
-                    </div>
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        disabled={deleting}
-                        className="mt-0.5 shrink-0 rounded-xl p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:pointer-events-none"
-                        aria-label="Fechar"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
-                            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-                        </svg>
-                    </button>
-                </div>
-
-                {/* Detalhes */}
-                <div className="flex-1 space-y-4 overflow-x-hidden overflow-y-auto px-6 py-5">
-                    {/* Badges */}
-                    <div className="flex flex-wrap gap-2">
-                        {task.status ? (
-                            <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ${statusClasses(task.status)}`}>
-                                {task.status}
-                            </span>
-                        ) : (
-                            <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-400 ring-1 ring-slate-200">
-                                Sem status
-                            </span>
-                        )}
-                        {task.daysOpen != null && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
-                                ⏱ {task.daysOpen}d em aberto
-                            </span>
-                        )}
-                        {notificationsCount > 0 && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-200">
-                                📨 {notificationsCount} notificação(ões)
-                            </span>
-                        )}
-                    </div>
-
-                    {/* Campos */}
-                    <div className="space-y-3">
-                        {task.responsible && (
-                            <div>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Responsável</p>
-                                <p className="mt-0.5 text-sm text-slate-900">{task.responsible}</p>
-                            </div>
-                        )}
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Reunião</p>
-                            <p className="mt-0.5 text-sm text-slate-900">
-                                {task.meetingTypeLabel} · {formatCalendarDate(task.meetingAt)}
-                            </p>
+        <>
+            <div
+                className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/50 p-4 sm:items-center"
+                onClick={(e) => { if (e.target === e.currentTarget && !deleting) onClose() }}
+            >
+                <div className="flex w-full max-w-2xl flex-col rounded-3xl bg-white shadow-xl ring-1 ring-slate-200 max-h-[90vh]">
+                    {/* Header */}
+                    <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-6 py-5">
+                        <div className="min-w-0">
+                            <h2 className="break-words text-lg font-semibold text-slate-900">{task.name}</h2>
+                            {task.url && (
+                                <a
+                                    href={task.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="mt-0.5 block break-all text-xs text-blue-600 hover:underline"
+                                >
+                                    Ver no Trello
+                                </a>
+                            )}
                         </div>
-                        {task.description && (
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            disabled={deleting}
+                            className="mt-0.5 shrink-0 rounded-xl p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 disabled:pointer-events-none"
+                            aria-label="Fechar"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
+                                <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {/* Detalhes */}
+                    <div className="flex-1 space-y-4 overflow-x-hidden overflow-y-auto px-6 py-5">
+                        {/* Badges */}
+                        <div className="flex flex-wrap gap-2">
+                            {task.status ? (
+                                <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ${statusClasses(task.status)}`}>
+                                    {task.status}
+                                </span>
+                            ) : (
+                                <span className="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-400 ring-1 ring-slate-200">
+                                    Sem status
+                                </span>
+                            )}
+                            {task.daysOpen != null && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
+                                    ⏱ {task.daysOpen}d em aberto
+                                </span>
+                            )}
+                            {notificationsCount > 0 && (
+                                <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700 ring-1 ring-indigo-200">
+                                    📨 {notificationsCount} notificação(ões)
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Campos */}
+                        <div className="space-y-3">
+                            {task.responsible && (
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Responsável</p>
+                                    <p className="mt-0.5 text-sm text-slate-900">{task.responsible}</p>
+                                </div>
+                            )}
                             <div>
-                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Descrição</p>
-                                <div className="mt-0.5 break-words text-sm text-slate-700
+                                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Reunião</p>
+                                <p className="mt-0.5 text-sm text-slate-900">
+                                    {task.meetingTypeLabel} · {formatCalendarDate(task.meetingAt)}
+                                </p>
+                            </div>
+                            {task.description && (
+                                <div>
+                                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Descrição</p>
+                                    <div className="mt-0.5 break-words text-sm text-slate-700
                                     [&_p]:mb-2 [&_p:last-child]:mb-0
                                     [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-4
                                     [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-4
@@ -188,62 +189,63 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
                                     [&_code]:break-all [&_code]:rounded [&_code]:bg-slate-100 [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-xs
                                     [&_pre]:overflow-x-auto
                                     [&_blockquote]:border-l-2 [&_blockquote]:border-slate-300 [&_blockquote]:pl-3 [&_blockquote]:text-slate-500">
-                                    <ReactMarkdown
-                                        remarkPlugins={[remarkGfm, remarkBreaks]}
-                                        components={{
-                                            a: ({ href, children }) => (
-                                                <a
-                                                    href={href}
-                                                    target="_blank"
-                                                    rel="noreferrer"
-                                                    style={{ color: '#2563eb', textDecoration: 'underline' }}
-                                                >
-                                                    {children}
-                                                </a>
-                                            ),
-                                        }}
-                                    >
-                                        {task.description}
-                                    </ReactMarkdown>
+                                        <ReactMarkdown
+                                            remarkPlugins={[remarkGfm, remarkBreaks]}
+                                            components={{
+                                                a: ({ href, children }) => (
+                                                    <a
+                                                        href={href}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        style={{ color: '#2563eb', textDecoration: 'underline' }}
+                                                    >
+                                                        {children}
+                                                    </a>
+                                                ),
+                                            }}
+                                        >
+                                            {task.description}
+                                        </ReactMarkdown>
+                                    </div>
                                 </div>
+                            )}
+                        </div>
+
+                        {error && (
+                            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                                {error}
                             </div>
                         )}
                     </div>
 
-                    {error && (
-                        <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                            {error}
+                    {/* Footer */}
+                    <div className="flex shrink-0 justify-between gap-3 border-t border-slate-100 px-6 py-4">
+                        <button
+                            type="button"
+                            onClick={() => setConfirmDelete(true)}
+                            disabled={deleting || notifying}
+                            className="rounded-2xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            Remover
+                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                type="button"
+                                onClick={handleOpenNotifyPicker}
+                                disabled={notifying || deleting}
+                                className="rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                {notifying ? 'Enviando…' : '📨 Notificar'}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onClose}
+                                disabled={deleting}
+                                className="rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
+                            >
+                                Fechar
+                            </button>
                         </div>
-                    )}
-                </div>
-
-                {/* Footer */}
-                <div className="flex shrink-0 justify-between gap-3 border-t border-slate-100 px-6 py-4">
-                    <button
-                        type="button"
-                        onClick={() => setConfirmDelete(true)}
-                        disabled={deleting || notifying}
-                        className="rounded-2xl border border-red-200 bg-red-50 px-5 py-2.5 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                        {deleting ? 'Removendo…' : 'Remover'}
-                    </button>
-                    <div className="flex gap-3">
-                        <button
-                            type="button"
-                            onClick={handleOpenNotifyPicker}
-                            disabled={notifying || deleting}
-                            className="rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-2.5 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-40"
-                        >
-                            {notifying ? 'Enviando…' : '📨 Notificar'}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            disabled={deleting}
-                            className="rounded-2xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
-                        >
-                            Fechar
-                        </button>
                     </div>
                 </div>
             </div>
@@ -331,7 +333,7 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
 
             {/* Confirmação de remoção */}
             {confirmDelete && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-4">
                     <div className="w-full max-w-sm rounded-3xl bg-white shadow-xl ring-1 ring-slate-200">
                         <div className="px-6 py-5">
                             <h3 className="text-base font-semibold text-slate-900">Remover tarefa</h3>
@@ -358,6 +360,6 @@ export default function ViewTaskModal({ task, organizationId, onClose, onDelete,
                     </div>
                 </div>
             )}
-        </div>
+        </>
     )
 }
