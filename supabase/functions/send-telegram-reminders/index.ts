@@ -23,7 +23,8 @@ interface ReminderPayload {
     meetingType?: string
     meetingTypeLabel?: string
     location?: string
-    reminderType?: '4days' | '1day' // '4days' (padrão) ou '1day' (lembrete do dia anterior)
+    reminderType?: '4days' | '1day' | '1hour' // '4days', '1day' ou '1hour' (lembrete 1h antes da entrevista)
+    testChatId?: number // quando presente, envia apenas para este chat_id (modo de teste)
 }
 
 async function sendMessage(botToken: string, chatId: number, text: string, replyMarkup: object): Promise<{ ok: boolean; error?: string }> {
@@ -81,7 +82,7 @@ Deno.serve(async (request: Request) => {
         return jsonResponse({ error: 'Body inválido.' }, 400)
     }
 
-    const { organizationId, googleEventId, title, meetingAt, meetingType, meetingTypeLabel, location, reminderType } = payload
+    const { organizationId, googleEventId, title, meetingAt, meetingType, meetingTypeLabel, location, reminderType, testChatId } = payload
 
     if (!organizationId || !googleEventId || !title || !meetingAt) {
         return jsonResponse({ error: 'Campos obrigatórios: organizationId, googleEventId, title, meetingAt.' }, 400)
@@ -121,7 +122,14 @@ Deno.serve(async (request: Request) => {
         }
     }
 
-    const totalParticipants = (users?.length || 0) + contacts.length
+    // Modo de teste: ignora destinatários reais e envia apenas para o chat_id especificado
+    const isTestMode = typeof testChatId === 'number'
+    const effectiveUsers: Array<{ id: string; full_name: string; telegram_chat_id: number }> = isTestMode
+        ? [{ id: 'test', full_name: 'Teste', telegram_chat_id: testChatId as number }]
+        : (users || [])
+    const effectiveContacts = isTestMode ? [] : contacts
+
+    const totalParticipants = effectiveUsers.length + effectiveContacts.length
     if (totalParticipants === 0) {
         return jsonResponse({ sent: 0, message: 'Nenhum destinatário com Telegram vinculado.' })
     }
@@ -154,6 +162,26 @@ Deno.serve(async (request: Request) => {
         idColumn: 'user_id' | 'telegram_contact_id',
         displayName: string
     ): Promise<{ ok: boolean; error?: string }> {
+
+        // Modo de teste: envia mensagem formatada sem operações no banco
+        if (isTestMode) {
+            let testMsg: string
+            if (reminderType === '1hour') {
+                testMsg = `⏰ <b>[TESTE] Lembrete: Entrevista em 1 Hora!</b>\n\n${baseInfo}\n\nPrepare-se — sua entrevista começa em aproximadamente 1 hora.`
+            } else if (reminderType === '1day') {
+                testMsg = `⚠️ <b>[TESTE] Lembrete: Amanhã!</b>\n\n${baseInfo}\n\nA reunião é amanhã! Por favor, confirme sua presença:`
+            } else {
+                testMsg = `📅 <b>[TESTE] Lembrete de Reunião</b>\n\n${baseInfo}\n\nConfirme sua presença:`
+            }
+            testMsg += '\n\n🧪 <i>Mensagem de teste — nenhuma confirmação foi registrada.</i>'
+            return await sendSimpleMessage(botToken as string, chatId, testMsg)
+        }
+
+        // --- Lembrete 1 hora antes (apenas entrevistas) ---
+        if (reminderType === '1hour') {
+            const msg = `⏰ <b>Lembrete: Entrevista em 1 Hora!</b>\n\n${baseInfo}\n\nPrepare-se — sua entrevista começa em aproximadamente 1 hora.`
+            return await sendSimpleMessage(botToken as string, chatId, msg)
+        }
 
         // --- Lembrete do dia anterior (1day) ---
         if (reminderType === '1day') {
@@ -257,14 +285,14 @@ Deno.serve(async (request: Request) => {
     const errors: string[] = []
 
     // Envia para usuários internos
-    for (const user of (users || [])) {
+    for (const user of effectiveUsers) {
         const result = await sendToParticipant(user.id, user.telegram_chat_id, 'user_id', user.full_name)
         if (result.ok) sent++
         else { failed++; if (result.error) errors.push(result.error) }
     }
 
     // Envia para contatos externos
-    for (const contact of contacts) {
+    for (const contact of effectiveContacts) {
         const result = await sendToParticipant(contact.id, contact.telegram_chat_id, 'telegram_contact_id', contact.full_name)
         if (result.ok) sent++
         else { failed++; if (result.error) errors.push(result.error) }
@@ -272,5 +300,5 @@ Deno.serve(async (request: Request) => {
 
     console.log(`Lembretes enviados: ${sent}/${totalParticipants} (${failed} falhas) — evento: ${googleEventId}`)
 
-    return jsonResponse({ sent, failed, total: totalParticipants, errors })
+    return jsonResponse({ sent, failed, total: totalParticipants, errors, ...(isTestMode && { testMode: true }) })
 })
